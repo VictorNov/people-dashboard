@@ -19,5 +19,6 @@ export default defineNuxtConfig({
         authDomain: '',
         projectId: '',
         backendApi: '',
-    }
+    },
+    ssr: false,
 })
