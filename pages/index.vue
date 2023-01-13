@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col
-          v-for="person in data"
+          v-for="person in persons"
           :key="person.Id"
           cols="12"
           md="6"
@@ -16,11 +16,10 @@
 
 <script setup lang="ts">
 const runtimeConfig = useRuntimeConfig()
-const { data, pending, error, refresh } = await
-    useFetch(`${runtimeConfig.public.backendApi}people`);
-console.log(data);
+const {
+  data: persons,
+  pending,
+  error,
+  refresh
+} = await useFetch(`${runtimeConfig.public.backendApi}people`);
 </script>
-
-<style scoped>
-
-</style>
