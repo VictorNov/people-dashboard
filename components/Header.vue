@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-      flat="true"
+      flat
       height="80"
   >
     <template #prepend>

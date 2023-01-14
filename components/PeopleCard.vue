@@ -9,51 +9,8 @@
           :elevation="isHovering ? 6 : 2"
           v-bind="props"
       >
-        <v-img
-            class="rounded-lg"
-            :src="person.Photo"
-            :alt="person.Name"
-            aspect-ratio="16/9"
-            cover
-            style="aspect-ratio: 16/9; object-fit: cover;"
-        />
-        <div class="people-card__tags">
-          <v-hover
-              v-for="tag in person.Tags"
-              :key="tag.Name"
-              v-slot="{ isHovering, props }"
-          >
-            <v-chip
-                v-bind="props"
-                :color="`#${tag.Color}`"
-                :style="{
-                color: textColor(tag.Color),
-                transform: `translateX(${isHovering ? '-1rem' : '0'})`,
-                transition: 'transform 0.2s ease-in-out'
-              }"
-                variant="elevated"
-                label
-                density="compact"
-            >
-            <span>
-              {{ tag.Name }}
-            </span>
-            </v-chip>
-          </v-hover>
-        </div>
-        <v-row>
-          <v-col>
-            <v-card-title
-                class="font-weight-bold pb-0"
-                tag="h2"
-            >
-              {{ capitalizedName }}
-            </v-card-title>
-            <v-card-subtitle>
-              {{ person.Title }}
-            </v-card-subtitle>
-          </v-col>
-          <v-col cols="4">
+        <people-card-info :person="person">
+          <template #actions>
             <v-card-actions class="justify-end">
               <v-dialog
                   v-if="!isEditable"
@@ -64,9 +21,9 @@
                   <v-btn
                       icon
                       :style="{
-                      transform: `translateX(${isHovering ? '0' : '120%'})`,
-                      transition: 'transform 0.2s ease-in-out'
-                    }"
+                    transform: `translateX(${isHovering ? '0' : '120%'})`,
+                    transition: 'transform 0.2s ease-in-out'
+                  }"
                       v-bind="props"
                   >
                     <v-icon>mdi-loupe</v-icon>
@@ -97,211 +54,43 @@
                 <v-icon>mdi-account-edit</v-icon>
               </v-btn>
             </v-card-actions>
-          </v-col>
-        </v-row>
-        <v-divider/>
-        <v-card-text>
-          <v-row>
-            <v-col cols="6" class="pb-0">Profit</v-col>
-            <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-              + ${{ profit * 10 }}
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-progress-linear
-                  :model-value="profit"
-                  :color="`#${profitColor}`"
-                  bg-color="grey lighten-4"
-                  height="20"
-                  rounded
-                  rounded-bar
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="6" class="pb-0">Attention</v-col>
-            <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-              {{ overallAttention || 0 }} h
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-progress-linear
-                  :model-value="100"
-                  :bg-color="overallAttention ? 'transparent' : 'grey lighten-4'"
-                  color="transparent"
-                  height="20"
-                  rounded
-                  rounded-bar
-                  :style="{ background: attentionBackgroundGradient }"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
+          </template>
+        </people-card-info>
       </v-card>
       
       <v-card
           v-show="isEditable"
-          class="people-card people-card__back people-card--edit pb-4 rounded-lg"
+          class="people-card people-card__back pb-4 rounded-lg"
       >
-        <v-img
-            class="rounded-lg"
-            :src="person.Photo"
-            :alt="person.Name"
-            aspect-ratio="16/9"
-            cover
-            style="aspect-ratio: 16/9; object-fit: cover;"
-        />
-        <div class="people-card__tags">
-          <v-hover
-              v-for="tag in person.Tags"
-              :key="tag.Name"
-              v-slot="{ isHovering, props }"
-          >
-            <v-chip
-                v-bind="props"
-                :color="`#${tag.Color}`"
-                :style="{
-                color: textColor(tag.Color),
-                transform: `translateX(${isHovering ? '-1rem' : '0'})`,
-                transition: 'transform 0.2s ease-in-out'
-              }"
-                variant="elevated"
-                label
-                density="compact"
-            >
-            <span>
-              {{ tag.Name }}
-            </span>
-            </v-chip>
-          </v-hover>
-        </div>
-        <v-row>
-          <v-col>
-            <v-card-title
-                class="font-weight-bold pb-0"
-                tag="h2"
-            >
-              {{ capitalizedName }}
-            </v-card-title>
-            <v-card-subtitle>
-              {{ person.Title }}
-            </v-card-subtitle>
-          </v-col>
-          <v-col cols="4">
+        <people-card-edit :person="person">
+          <template #actions>
             <v-card-actions class="justify-end">
               <v-btn
                   icon
                   @click="isEditing = !isEditing"
               >
+                <!-- todo: to save edited content to server -->
                 <v-icon>mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
-          </v-col>
-        </v-row>
-        <v-divider/>
-        <v-card-text>
-          <v-row>
-            <v-col cols="6" class="pb-0">Profit</v-col>
-            <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-              + ${{ profit * 10 }}
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-progress-linear
-                  :model-value="profit"
-                  :color="`#${profitColor}`"
-                  bg-color="grey lighten-4"
-                  height="20"
-                  rounded
-                  rounded-bar
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="6" class="pb-0">Attention</v-col>
-            <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-              {{ overallAttention || 0 }} h
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-progress-linear
-                  :model-value="100"
-                  :bg-color="overallAttention ? 'transparent' : 'grey lighten-4'"
-                  color="transparent"
-                  height="20"
-                  rounded
-                  rounded-bar
-                  :style="{ background: attentionBackgroundGradient }"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
+          </template>
+        </people-card-edit>
       </v-card>
     </div>
   </v-hover>
 </template>
 
 <script setup lang="ts">
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import {Person} from "@/types";
 
-const props = defineProps<{
+defineProps<{
   person: Person;
   isEditable?: boolean;
 }>();
 
 const showPopup: Ref = ref(false);
 const isEditing: Ref = ref(false);
-
-const capitalizedName = computed(() => {
-  const [name, surname] = props.person.Name.split(' ');
-  return `${name[0].toUpperCase()}${name.slice(1)} ${surname[0].toUpperCase()}${surname.slice(1)}`;
-});
-
-const profit: ComputedRef = computed((): number => {
-  if (props.person.Profit) {
-    return props.person.Profit[0].Amount / 10;
-  }
-  return 0;
-});
-
-const profitColor: ComputedRef = computed((): string => {
-  if (props.person.Profit) {
-    return props.person.Profit[0].Color;
-  }
-  return "primary";
-});
-
-const overallAttention = computed((): number => {
-  if (props.person.Attention) {
-    return props.person.Attention.reduce((sum, current): number => sum + current.Amount, 0);
-  }
-  return 0;
-});
-
-const attentionBackgroundGradient = computed((): string => {
-  let linearGradient: string = '';
-  if (props.person.Attention) {
-    let percentage: number = 0;
-    linearGradient = props.person.Attention.reduce((acc, item, index, arr) => {
-      const lastPercentage = percentage;
-      percentage += item.Amount / overallAttention.value * 100;
-      acc += `#${item.Color} ${lastPercentage}%, #${item.Color} ${percentage}%`;
-      if (index !== arr.length - 1) {
-        acc += ', ';
-      }
-      return acc;
-    }, 'linear-gradient(to right, ');
-    linearGradient += ')';
-  }
-  return linearGradient;
-});
-
-const textColor = (hexcolor: string): string => {
-  const r: number = parseInt(hexcolor.substring(0, 2), 16);
-  const g: number = parseInt(hexcolor.substring(2, 4), 16);
-  const b: number = parseInt(hexcolor.substring(4, 6), 16);
-  const yiq: number = (r * 299 + g * 587 + b * 114) / 1000;
-  return yiq >= 128 ? "black" : "white";
-};
 </script>
 
 <style scoped>
@@ -332,16 +121,6 @@ const textColor = (hexcolor: string): string => {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   transform: rotateY(180deg);
-}
-
-.people-card__tags {
-  position: absolute;
-  top: 1rem;
-  right: -.8rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: .25rem;
 }
 
 .people-card__close-btn {
