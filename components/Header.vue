@@ -9,7 +9,7 @@
           color="white"
           style="border-radius: 8px"
       >
-        <nuxt-img
+        <v-img
             src="/logo.svg"
             alt="logo"
             width="64"
@@ -55,9 +55,9 @@
           size="64"
           style="border-radius: 8px"
       >
-        <nuxt-img
+        <v-img
             src="/avatar.jpg"
-            alt="logo"
+            alt="avatar"
             fit="cover"
             width="64"
             height="64"
