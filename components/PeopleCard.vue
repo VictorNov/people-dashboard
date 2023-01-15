@@ -64,13 +64,22 @@
       >
         <people-card-edit :person="person">
           <template #actions>
-            <v-card-actions class="justify-end">
+            <v-card-actions
+                class="d-flex justify-space-between"
+                style="width: 100%;"
+            >
               <v-btn
-                  icon
+                  prepend-icon="mdi-arrow-left"
+                  @click="isEditing = !isEditing"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                  prepend-icon="mdi-content-save"
                   @click="isEditing = !isEditing"
               >
                 <!-- todo: to save edited content to server -->
-                <v-icon>mdi-content-save</v-icon>
+                Save
               </v-btn>
             </v-card-actions>
           </template>
@@ -93,7 +102,7 @@ const showPopup: Ref = ref(false);
 const isEditing: Ref = ref(false);
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .people-card {
   position: relative;
   backface-visibility: hidden;
@@ -114,13 +123,28 @@ const isEditing: Ref = ref(false);
 
 .people-card__back {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 90vh;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  transform: rotateY(180deg);
+  transform: translateY(-50%) rotateY(180deg);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 1rem;
+  }
 }
 
 .people-card__close-btn {

@@ -3,7 +3,7 @@ export type Person = {
     Name: string;
     Title: string;
     Photo: string;
-    Tags?: { Name: string, Color: string }[];
-    Attention?: { Amount: number, Color: string }[];
-    Profit?: { Amount: number, Color: string }[];
+    Tags?: { Name: string, Color: string, dialog?: boolean; }[];
+    Attention?: { Amount: number, Color: string, dialog?: boolean; }[];
+    Profit?: { Amount: number, Color: string, dialog?: boolean; }[];
 }

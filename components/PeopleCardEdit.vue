@@ -53,79 +53,255 @@
       hide-details
       hide-input
   />
-  <div class="people-card__tags">
-    <v-hover
-        v-for="tag in person.Tags"
-        :key="tag.Name"
-        v-slot="{ isHovering, props }"
-    >
-      <v-chip
-          v-bind="props"
-          :color="`#${tag.Color}`"
-          :style="{
-              color: useCalculateColor(tag.Color),
-              transform: `translateX(${isHovering ? '-1rem' : '0'})`,
-              transition: 'transform 0.2s ease-in-out'
-            }"
-          variant="elevated"
-          label
-          density="compact"
-      >
-          <span>
-            {{ tag.Name }}
-          </span>
-      </v-chip>
-    </v-hover>
-  </div>
-  <v-row>
-    <v-col cols="8">
-      <v-card-title
-          class="font-weight-bold pb-0"
-          tag="h2"
-      >
-        {{ useCapitalize(person.Name) }}
-      </v-card-title>
-      <v-card-subtitle>
-        {{ person.Title }}
-      </v-card-subtitle>
-    </v-col>
-    <v-col cols="4">
-      <slot name="actions"/>
-    </v-col>
-  </v-row>
-  <v-divider/>
   <v-card-text>
+    <v-text-field
+        v-model="editedPerson.Name"
+        label="Name"
+        variant="outlined"
+    />
+    <v-text-field
+        v-model="editedPerson.Title"
+        label="Title"
+        variant="outlined"
+    />
+    <v-divider/>
+    <v-card-subtitle class="mt-2">
+      Tags
+    </v-card-subtitle>
+    <v-row
+        v-for="(tag, index) in editedPerson.Tags"
+        :key="`tag-${index}`"
+        class="mt-2 align-center"
+    >
+      <v-dialog
+          v-model="tag.dialog"
+          max-width="290"
+      >
+        <template #activator="{ props }">
+          <v-btn
+              class="mx-2 my-2"
+              icon
+              :="props"
+              :color="tag.Color"
+              :text-color="useCalculateColor(tag.Color)"
+              size="44"
+          >
+            <v-icon>mdi-eyedropper-variant</v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            Choose a color
+          </v-card-title>
+          <v-card-text>
+            <v-color-picker
+                mode="hex"
+                v-model="tag.Color"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn
+                icon
+                @click="tag.dialog = false"
+            >
+              <v-icon>mdi-check</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-text-field
+          class="mx-2 my-2"
+          v-model="tag.Name"
+          label="Tag name"
+          variant="outlined"
+          density="compact"
+          hide-details
+      />
+      <v-btn
+          class="mx-2 my-2"
+          icon
+          size="44"
+          @click="editedPerson.Tags.splice(index, 1)"
+      >
+        <v-icon>mdi-trash-can-outline</v-icon>
+      </v-btn>
+    </v-row>
     <v-row>
-      <v-col cols="6" class="pb-0">Profit</v-col>
-      <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-        + ${{ profit * 10 }}
+      <v-btn
+          class="mx-2 my-2"
+          text
+          @click="editedPerson.Tags.push({ Name: '', Color: '#ffffff', dialog: true })"
+      >
+        <v-icon>mdi-plus</v-icon> Add tag
+      </v-btn>
+    </v-row>
+    <v-row class="mt-6">
+      <v-divider/>
+      <v-card-subtitle class="mt-2">
+        Profit
+      </v-card-subtitle>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="d-flex align-center">
+        <v-dialog
+            v-model="editedPerson.Profit[0].dialog"
+            max-width="290"
+        >
+          <template #activator="{ props }">
+            <v-btn
+                icon
+                :="props"
+                :color="editedPerson.Profit[0].Color"
+                :text-color="useCalculateColor(editedPerson.Profit[0].Color)"
+                size="44"
+            >
+              <v-icon>mdi-eyedropper-variant</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              Choose a color
+            </v-card-title>
+            <v-card-text>
+              <v-color-picker
+                  mode="hex"
+                  v-model="editedPerson.Profit[0].Color"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer/>
+              <v-btn
+                  icon
+                  @click="editedPerson.Profit[0].dialog = false"
+              >
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-text-field
+            class="ml-2"
+            v-model="editedPerson.Profit[0].Amount"
+            label="Profit"
+            variant="outlined"
+            density="compact"
+            hide-details
+            prefix="+"
+            suffix="$"
+            type="number"
+            :max="1000"
+            :min="0"
+            @update:modelValue="editedPerson.Profit[0].Amount = Math.min(1000, Math.max(0, editedPerson.Profit[0].Amount))"
+        />
       </v-col>
-      <v-col cols="12" class="py-0">
+      <v-col cols="12">
         <v-progress-linear
-            :model-value="profit"
-            :color="`#${profitColor}`"
+            :model-value="editedPerson.Profit[0].Amount / 10"
+            :color="editedPerson.Profit[0].Color"
             bg-color="grey lighten-4"
             height="20"
             rounded
             rounded-bar
+            clickable
+            @update:modelValue="editedPerson.Profit[0].Amount = $event * 10"
         />
       </v-col>
     </v-row>
-
-    <v-row>
-      <v-col cols="6" class="pb-0">Attention</v-col>
-      <v-col cols="6" class="d-flex justify-end pb-0 font-weight-bold">
-        {{ 0 }} h
+    <v-row class="mt-6">
+      <v-divider/>
+      <v-card-subtitle class="mt-2">
+        Attentions
+      </v-card-subtitle>
+    </v-row>
+    <v-row
+        v-for="(attention, index) in editedPerson.Attention"
+        :key="`attention-${index}`"
+    >
+      <v-col cols="12" class="d-flex align-center">
+        <v-dialog
+            v-model="attention.dialog"
+            max-width="290"
+        >
+          <template #activator="{ props }">
+            <v-btn
+                icon
+                :="props"
+                :color="attention.Color"
+                :text-color="useCalculateColor(attention.Color)"
+                size="44"
+            >
+              <v-icon>mdi-eyedropper-variant</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              Choose a color
+            </v-card-title>
+            <v-card-text>
+              <v-color-picker
+                  mode="hex"
+                  v-model="attention.Color"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer/>
+              <v-btn
+                  icon
+                  @click="attention.dialog = false"
+              >
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-text-field
+            class="ml-2"
+            v-model="attention.Amount"
+            label="Attention"
+            variant="outlined"
+            density="compact"
+            hide-details
+            suffix="h"
+            type="number"
+            :min="0"
+            :max="100"
+            @update:modelValue="attention.Amount = Math.min(100, Math.max(0, attention.Amount))"
+        />
+        <v-btn
+            class="mx-2 my-2"
+            icon
+            size="44"
+            @click="editedPerson.Attention.splice(index, 1)"
+        >
+          <v-icon>mdi-trash-can-outline</v-icon>
+        </v-btn>
       </v-col>
-      <v-col cols="12" class="py-0">
+      <v-col cols="12">
         <v-progress-linear
-            :model-value="100"
-            color="transparent"
+            :model-value="attention.Amount"
+            :color="attention.Color"
+            bg-color="grey lighten-4"
             height="20"
             rounded
             rounded-bar
+            clickable
+            @update:modelValue="attention.Amount = $event"
         />
       </v-col>
+    </v-row>
+    <v-row>
+      <v-btn
+          class="mx-2 my-2"
+          text
+          @click="editedPerson.Attention.push({ Name: '', Color: '#ffffff', dialog: true })"
+      >
+        <v-icon>mdi-plus</v-icon> Add attention
+      </v-btn>
+    </v-row>
+    <v-row class="mt-6">
+      <v-divider/>
+      <slot name="actions"/>
     </v-row>
   </v-card-text>
 </template>
@@ -139,9 +315,28 @@ const props = defineProps<{
   isEditable?: boolean;
 }>();
 
-const editedPerson: Ref<Person> = ref({...props.person});
+const editedPerson = ref<Person>(JSON.parse(JSON.stringify(props.person)));
 const editedPhoto: Ref<File[] | null> = ref(null);
 const fileInput: Ref<HTMLElement | null> = ref(null);
+
+editedPerson.value.Tags?.forEach((tag) => {
+  tag.dialog = false;
+  if (!tag.Color.startsWith('#')) {
+    tag.Color = `#${tag.Color}`;
+  }
+});
+editedPerson.value.Profit?.forEach((profit) => {
+  profit.dialog = false;
+  if (!profit.Color.startsWith('#')) {
+    profit.Color = `#${profit.Color}`;
+  }
+});
+editedPerson.value.Attention?.forEach((attention) => {
+  attention.dialog = false;
+  if (!attention.Color.startsWith('#')) {
+    attention.Color = `#${attention.Color}`;
+  }
+});
 
 watch(editedPhoto, (newPhoto) => {
   if (newPhoto) {
