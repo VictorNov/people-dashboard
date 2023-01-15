@@ -15,12 +15,10 @@ export default defineNuxtConfig({
         '@nuxt/image-edge',
     ],
     runtimeConfig: {
-        public: {
-            apiKey: '',
-            authDomain: '',
-            projectId: '',
-            backendApi: '',
-        },
+        apiKey: '',
+        authDomain: '',
+        projectId: '',
+        backendApi: '',
     },
     ssr: false,
 })

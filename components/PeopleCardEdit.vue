@@ -83,10 +83,11 @@
               icon
               :="props"
               :color="tag.Color"
-              :text-color="useCalculateColor(tag.Color)"
               size="44"
           >
-            <v-icon>mdi-eyedropper-variant</v-icon>
+            <v-icon :color="useCalculateColor(tag.Color)">
+              mdi-eyedropper-variant
+            </v-icon>
           </v-btn>
         </template>
         <v-card>
@@ -153,10 +154,11 @@
                 icon
                 :="props"
                 :color="editedPerson.Profit[0].Color"
-                :text-color="useCalculateColor(editedPerson.Profit[0].Color)"
                 size="44"
             >
-              <v-icon>mdi-eyedropper-variant</v-icon>
+              <v-icon :color="useCalculateColor(editedPerson.Profit[0].Color)">
+                mdi-eyedropper-variant
+              </v-icon>
             </v-btn>
           </template>
           <v-card>
@@ -228,10 +230,11 @@
                 icon
                 :="props"
                 :color="attention.Color"
-                :text-color="useCalculateColor(attention.Color)"
                 size="44"
             >
-              <v-icon>mdi-eyedropper-variant</v-icon>
+              <v-icon :color="useCalculateColor(attention.Color)">
+                mdi-eyedropper-variant
+              </v-icon>
             </v-btn>
           </template>
           <v-card>
@@ -301,13 +304,30 @@
     </v-row>
     <v-row class="mt-6">
       <v-divider/>
-      <slot name="actions"/>
+      <v-card-actions
+          class="d-flex justify-space-between"
+          style="width: 100%;"
+      >
+        <v-btn
+            prepend-icon="mdi-arrow-left"
+            @click="handleCancel"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+            prepend-icon="mdi-content-save"
+            @click="handleEdit"
+        >
+          <!-- todo: to save edited content to server -->
+          Save
+        </v-btn>
+      </v-card-actions>
     </v-row>
   </v-card-text>
 </template>
 
 <script setup lang="ts">
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import {Person} from "@/types";
 
 const props = defineProps<{
@@ -351,26 +371,19 @@ watch(editedPhoto, (newPhoto) => {
 });
 
 const emits = defineEmits<{
+  (event: 'cancel', ...args: any[]): void;
   (event: 'edit', ...args: any[]): void;
 }>();
 
-function onEdit() {
-  emits('edit', editedPerson);
+function handleCancel() {
+  editedPerson.value = JSON.parse(JSON.stringify(props.person));
+  editedPhoto.value = null;
+  emits('cancel');
 }
 
-const profit: ComputedRef = computed((): number => {
-  if (editedPerson.value.Profit) {
-    return editedPerson.value.Profit[0].Amount / 10;
-  }
-  return 0;
-});
-
-const profitColor: ComputedRef = computed((): string => {
-  if (editedPerson.value.Profit) {
-    return editedPerson.value.Profit[0].Color;
-  }
-  return "primary";
-});
+function handleEdit() {
+  emits('edit', editedPerson.value);
+}
 </script>
 
 <style scoped>

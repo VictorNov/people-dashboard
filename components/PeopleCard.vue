@@ -34,16 +34,8 @@
                     :person="person"
                     isEditable="true"
                     @close="showPopup = false"
+                    @edit="handleEdit"
                 />
-
-                <v-btn
-                    class="people-card__close-btn"
-                    icon
-                    density="compact"
-                    @click="showPopup = false"
-                >
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
               </v-dialog>
 
               <v-btn
@@ -59,31 +51,14 @@
       </v-card>
       
       <v-card
-          v-show="isEditable"
+          v-if="isEditable"
           class="people-card people-card__back pb-4 rounded-lg"
       >
-        <people-card-edit :person="person">
-          <template #actions>
-            <v-card-actions
-                class="d-flex justify-space-between"
-                style="width: 100%;"
-            >
-              <v-btn
-                  prepend-icon="mdi-arrow-left"
-                  @click="isEditing = !isEditing"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                  prepend-icon="mdi-content-save"
-                  @click="isEditing = !isEditing"
-              >
-                <!-- todo: to save edited content to server -->
-                Save
-              </v-btn>
-            </v-card-actions>
-          </template>
-        </people-card-edit>
+        <people-card-edit
+            :person="person"
+            @cancel="handleCancel"
+            @edit="handleEdit"
+        />
       </v-card>
     </div>
   </v-hover>
@@ -93,13 +68,26 @@
 import {Ref} from "vue";
 import {Person} from "@/types";
 
-defineProps<{
+const props = defineProps<{
   person: Person;
   isEditable?: boolean;
 }>();
 
+const emits = defineEmits<{
+  (event: 'edit', ...args: any[]): void;
+}>();
+
 const showPopup: Ref = ref(false);
 const isEditing: Ref = ref(false);
+
+function handleEdit(editedPerson: Person) {
+  emits('edit', editedPerson);
+  isEditing.value = false;
+}
+
+function handleCancel() {
+  isEditing.value = !isEditing.value;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -145,13 +133,5 @@ const isEditing: Ref = ref(false);
     background: #888;
     border-radius: 1rem;
   }
-}
-
-.people-card__close-btn {
-  position: absolute;
-  top: 0;
-  right: -1rem;
-  z-index: 1;
-  transform: translateX(100%);
 }
 </style>

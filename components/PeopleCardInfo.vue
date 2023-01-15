@@ -15,7 +15,7 @@
     >
       <v-chip
           v-bind="props"
-          :color="`#${tag.Color}`"
+          :color="tag.Color"
           :style="{
               color: useCalculateColor(tag.Color),
               transform: `translateX(${isHovering ? '-1rem' : '0'})`,
@@ -57,7 +57,7 @@
       <v-col cols="12" class="py-0">
         <v-progress-linear
             :model-value="profit"
-            :color="`#${profitColor}`"
+            :color="`${profitColor}`"
             bg-color="grey lighten-4"
             height="20"
             rounded
@@ -123,7 +123,7 @@ const attentionBackgroundGradient = computed((): string => {
     linearGradient = props.person.Attention.reduce((acc, item, index, arr) => {
       const lastPercentage = percentage;
       percentage += item.Amount / overallAttention.value * 100;
-      acc += `#${item.Color} ${lastPercentage}%, #${item.Color} ${percentage}%`;
+      acc += `${item.Color} ${lastPercentage}%, ${item.Color} ${percentage}%`;
       if (index !== arr.length - 1) {
         acc += ', ';
       }

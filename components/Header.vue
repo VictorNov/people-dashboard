@@ -28,7 +28,8 @@
     <v-btn icon="mdi-dots-grid"/>
 
     <v-text-field
-        placeholder="Search"
+        v-model="searchTerm"
+        label="Search by name"
         variant="outlined"
         append-inner-icon="mdi-magnify"
         density="compact"
@@ -66,3 +67,7 @@
     </template>
   </v-app-bar>
 </template>
+
+<script setup lang="ts">
+const searchTerm = useSearchTerm();
+</script>
