@@ -90,13 +90,9 @@ watch(() => pending.value, () => {
 });
 
 async function handleScroll() {
-  let bottomOfWindow = Math.max(
-      window.scrollY,
-      document.documentElement.scrollTop,
-      document.body.scrollTop
-  ) + window.innerHeight === document.documentElement.offsetHeight;
+  const bottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
 
-  if (bottomOfWindow && !isPending.value) {
+  if (bottom < 50 && !isPending.value) {
     isPending.value = true;
     const { data, pending, error } = await useLazyFetch('/api/fetch-persons', {
       query: { page: persons.value.currentPage }
