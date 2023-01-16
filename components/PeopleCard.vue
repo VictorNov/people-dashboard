@@ -6,10 +6,13 @@
     >
       <v-card
           class="people-card people-card__front pb-4 rounded-lg"
+          :="props"
           :elevation="isHovering ? 6 : 2"
-          v-bind="props"
       >
-        <people-card-info :person="person">
+        <people-card-info
+            :person="person"
+            :is-editable="false"
+        >
           <template #actions>
             <v-card-actions class="justify-end">
               <v-dialog
@@ -20,11 +23,11 @@
                 <template #activator="{ props }">
                   <v-btn
                       icon
+                      :="props"
                       :style="{
-                    transform: `translateX(${isHovering ? '0' : '120%'})`,
-                    transition: 'transform 0.2s ease-in-out'
-                  }"
-                      v-bind="props"
+                        transform: `translateX(${isHovering ? '0' : '120%'})`,
+                        transition: 'transform 0.2s ease-in-out'
+                      }"
                   >
                     <v-icon>mdi-loupe</v-icon>
                   </v-btn>
@@ -32,9 +35,7 @@
 
                 <people-card
                     :person="person"
-                    isEditable="true"
-                    @close="showPopup = false"
-                    @edit="handleEdit"
+                    :isEditable="true"
                 />
               </v-dialog>
 
@@ -56,8 +57,7 @@
       >
         <people-card-edit
             :person="person"
-            @cancel="handleCancel"
-            @edit="handleEdit"
+            @close="isEditing = false"
         />
       </v-card>
     </div>
@@ -68,26 +68,13 @@
 import {Ref} from "vue";
 import {Person} from "@/types";
 
-const props = defineProps<{
+defineProps<{
   person: Person;
   isEditable?: boolean;
 }>();
 
-const emits = defineEmits<{
-  (event: 'edit', ...args: any[]): void;
-}>();
-
-const showPopup: Ref = ref(false);
-const isEditing: Ref = ref(false);
-
-function handleEdit(editedPerson: Person) {
-  emits('edit', editedPerson);
-  isEditing.value = false;
-}
-
-function handleCancel() {
-  isEditing.value = !isEditing.value;
-}
+const showPopup: Ref<boolean> = ref(false);
+const isEditing: Ref<boolean> = ref(false);
 </script>
 
 <style lang="scss" scoped>
@@ -130,8 +117,8 @@ function handleCancel() {
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #888;
     border-radius: 1rem;
+    background: #888;
   }
 }
 </style>

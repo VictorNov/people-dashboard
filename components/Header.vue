@@ -5,6 +5,7 @@
   >
     <template #prepend>
       <v-avatar
+          class="hidden-md-and-down"
           size="64"
           color="white"
           style="border-radius: 8px"
@@ -19,13 +20,20 @@
     </template>
 
     <v-btn
+        class="hidden-md-and-down"
         icon="mdi-rectangle-outline"
         style="transform: rotate(90deg)"
     />
 
-    <v-btn icon="mdi-rectangle-outline"/>
+    <v-btn
+        class="hidden-md-and-down"
+        icon="mdi-rectangle-outline"
+    />
 
-    <v-btn icon="mdi-dots-grid"/>
+    <v-btn
+        class="hidden-md-and-down"
+        icon="mdi-dots-grid"
+    />
 
     <v-text-field
         v-model="searchTerm"
@@ -34,21 +42,23 @@
         append-inner-icon="mdi-magnify"
         density="compact"
         hide-details
-        style="max-width: 350px; margin: 0 16px"
+        style="max-width: 350px; margin: 0 16px;"
     />
 
     <v-badge
+        class="hidden-md-and-down"
         dot
         color="red"
     >
-      <v-btn icon="mdi-filter"/>
+      <v-btn icon="mdi-filter" />
     </v-badge>
 
     <v-badge
+        class="hidden-md-and-down"
         dot
         color="red"
     >
-      <v-btn icon="mdi-swap-vertical"/>
+      <v-btn icon="mdi-swap-vertical" />
     </v-badge>
 
     <template #append>

@@ -1,8 +1,10 @@
 import {Person} from "@/types";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event): Promise<Person[]> => {
     const runtimeConfig = useRuntimeConfig();
-    const persons: Person[] = await $fetch(runtimeConfig.backendApi + 'people');
+    const query = getQuery(event);
+
+    const persons: Person[] = await $fetch(runtimeConfig.backendApi + 'people?pp=8&p=' + query.page);
 
     persons.forEach((person: Person) => {
         person.Tags = person.Tags?.map((tag) => {

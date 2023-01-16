@@ -3,9 +3,8 @@
       class="rounded-lg"
       :src="person.Photo"
       :alt="person.Name"
-      aspect-ratio="16/9"
       cover
-      style="aspect-ratio: 16/9; object-fit: cover;"
+      style="aspect-ratio: 16/9;"
   />
   <div class="people-card__tags">
     <v-hover
@@ -14,16 +13,16 @@
         v-slot="{ isHovering, props }"
     >
       <v-chip
-          v-bind="props"
+          :="props"
           :color="tag.Color"
+          variant="elevated"
+          density="compact"
+          label
           :style="{
               color: useCalculateColor(tag.Color),
               transform: `translateX(${isHovering ? '-1rem' : '0'})`,
               transition: 'transform 0.2s ease-in-out'
             }"
-          variant="elevated"
-          label
-          density="compact"
       >
           <span>
             {{ tag.Name }}
@@ -87,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import {ComputedRef, Ref} from "vue";
+import {ComputedRef} from "vue";
 import {Person} from "@/types";
 
 const props = defineProps<{
@@ -109,14 +108,14 @@ const profitColor: ComputedRef = computed((): string => {
   return "primary";
 });
 
-const overallAttention = computed((): number => {
+const overallAttention: ComputedRef = computed((): number => {
   if (props.person.Attention) {
     return props.person.Attention.reduce((sum, current): number => sum + current.Amount, 0);
   }
   return 0;
 });
 
-const attentionBackgroundGradient = computed((): string => {
+const attentionBackgroundGradient: ComputedRef = computed((): string => {
   let linearGradient: string = '';
   if (props.person.Attention) {
     let percentage: number = 0;
@@ -142,7 +141,7 @@ const attentionBackgroundGradient = computed((): string => {
   right: -.8rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: .25rem;
+  align-items: flex-end;
 }
 </style>
