@@ -47,6 +47,10 @@
 <script setup lang="ts">
 import {Person} from "@/types";
 
+definePageMeta({
+  middleware: ["auth"]
+})
+
 const persons = usePersons();
 const searchTerms = useSearchTerm();
 const isError = ref();

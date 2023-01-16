@@ -65,6 +65,7 @@
       <v-avatar
           size="64"
           style="border-radius: 8px"
+          @click="signOutUser"
       >
         <v-img
             src="/avatar.jpg"

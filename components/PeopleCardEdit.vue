@@ -71,7 +71,7 @@
       <v-btn
           class="mx-2 my-2"
           text
-          @click="editedPerson.Attention.push({ Amount: 50, Color: '#ffffff', dialog: true })"
+          @click="pushAttention"
       >
         <v-icon>mdi-plus</v-icon> Add attention
       </v-btn>
@@ -110,6 +110,14 @@ const props = defineProps<{
 
 const persons = usePersons();
 const editedPerson: Ref<Person> = ref(JSON.parse(JSON.stringify(props.person)));
+
+function pushAttention() {
+  if (editedPerson.value.Attention?.length) {
+    editedPerson.value.Attention.push({ Amount: 50, Color: '#ffffff', dialog: true });
+  } else {
+    editedPerson.value.Attention = [{ Amount: 50, Color: '#ffffff', dialog: true }];
+  }
+}
 
 const emits = defineEmits<{
   (event: 'close'): void;

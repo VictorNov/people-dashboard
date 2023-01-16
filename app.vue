@@ -16,5 +16,5 @@ useHead({
       content: 'Code test project for Dev-Team'
     }
   ]
-})
+});
 </script>
