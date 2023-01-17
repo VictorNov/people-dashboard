@@ -22,14 +22,16 @@
               >
                 <template #activator="{ props }">
                   <v-btn
+                      class="people-card__btn"
                       icon
                       :="props"
-                      :style="{
-                        transform: `translateX(${isHovering ? '0' : '120%'})`,
-                        transition: 'transform 0.2s ease-in-out'
-                      }"
                   >
-                    <v-icon>mdi-loupe</v-icon>
+                    <v-icon
+                        :style="{
+                          transform: `translateX(${isHovering ? '0' : '200%'})`,
+                          transition: 'transform 0.2s ease-in-out'
+                        }"
+                    >mdi-loupe</v-icon>
                   </v-btn>
                 </template>
 
@@ -120,5 +122,10 @@ const isEditing: Ref<boolean> = ref(false);
     border-radius: 1rem;
     background: #888;
   }
+}
+
+.people-card__btn:focus .v-icon,
+.people-card__btn:focus-visible .v-icon{
+  transform: translateX(0) !important;
 }
 </style>
