@@ -18,6 +18,15 @@
         variant="outlined"
         @update:model-value="password = $event"
     />
+    <v-alert
+        v-if="errorMessage"
+        color="error"
+        icon="mdi-alert-circle"
+        outlined
+        type="error"
+    >
+      {{ errorMessage }}
+    </v-alert>
   </v-card-text>
   <v-card-actions>
     <v-btn
@@ -27,13 +36,13 @@
         size="large"
         @click="handleAction"
     >
-      {{ isRegistration ? 'Register' : 'Sign In' }}
+      Submit
     </v-btn>
   </v-card-actions>
 </template>
 
 <script lang="ts" setup>
-import { Ref } from 'vue';
+import {ComputedRef, Ref} from 'vue';
 
 const props = defineProps<{
   title: string;
@@ -43,13 +52,33 @@ const props = defineProps<{
 const email: Ref<string> = ref('');
 const password: Ref<string> = ref('');
 const router = useRouter();
+const errorCode: Ref<string> = ref('');
+const errorMessage: ComputedRef = computed(() => {
+  if (errorCode.value === 'auth/user-not-found') {
+    return 'User not found';
+  } else if (errorCode.value === 'auth/wrong-password') {
+    return 'Wrong password';
+  } else if (errorCode.value === 'auth/email-already-in-use') {
+    return 'Email already in use';
+  } else if (errorCode.value === 'auth/weak-password') {
+    return 'Password is too weak';
+  } else {
+    return '';
+  }
+});
 
 async function registerUser() {
-  await createUser(email.value, password.value);
+  const res = await createUser(email.value, password.value);
+  if (res) {
+    errorCode.value = res.errorCode;
+  }
 }
 
 async function signIn() {
-  await signInUser(email.value, password.value);
+  const res = await signInUser(email.value, password.value);
+  if (res.errorCode) {
+    errorCode.value = res.errorCode;
+  }
 }
 
 function handleAction() {
@@ -59,4 +88,12 @@ function handleAction() {
     signIn();
   }
 }
+
+watch([
+  () => email.value,
+  () => password.value,
+  () => props.isRegistration,
+], () => {
+  errorCode.value = '';
+});
 </script>

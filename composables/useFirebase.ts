@@ -3,9 +3,13 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
+    UserCredential,
 } from "firebase/auth";
 
-export const createUser = async (email: string, password: string) => {
+export const createUser = async (
+    email: string,
+    password: string
+) : Promise<UserCredential | { errorCode: string, errorMessage: string }> => {
     const auth = getAuth();
     const credentials = await createUserWithEmailAndPassword(
         auth,
@@ -15,13 +19,16 @@ export const createUser = async (email: string, password: string) => {
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.error(errorCode, errorMessage);
+            return { errorCode, errorMessage };
         });
 
     return credentials;
 }
 
-export const signInUser = async (email: string, password: string) => {
+export const signInUser = async (
+    email: string,
+    password: string
+): Promise<UserCredential | { errorCode: string, errorMessage: string }> => {
     const auth = getAuth();
     const credentials = await signInWithEmailAndPassword(
         auth,
@@ -31,7 +38,7 @@ export const signInUser = async (email: string, password: string) => {
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.error(errorCode, errorMessage);
+            return { errorCode, errorMessage };
         });
 
     return credentials;

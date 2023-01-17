@@ -62,23 +62,62 @@
     </v-badge>
 
     <template #append>
-      <v-avatar
-          size="64"
-          style="border-radius: 8px"
-          @click="signOutUser"
+      <v-menu
+          offset-y
+          transition="slide-y-transition"
+          location="bottom right"
       >
-        <v-img
-            src="/avatar.jpg"
-            alt="avatar"
-            fit="cover"
-            width="64"
-            height="64"
-        />
-      </v-avatar>
+        <template #activator="{ props }">
+          <button :="props">
+            <v-avatar
+                size="64"
+                style="border-radius: 8px; cursor: pointer"
+            >
+              <v-img
+                  src="/avatar.jpg"
+                  alt="avatar"
+                  fit="cover"
+                  width="64"
+                  height="64"
+              />
+            </v-avatar>
+          </button>
+        </template>
+
+        <v-list
+            color="white"
+            width="200"
+        >
+          <v-list-item>
+            <template #prepend>
+              <v-img
+                  class="rounded-circle"
+                  src="/avatar.jpg"
+                  alt="avatar"
+                  fit="cover"
+                  width="24"
+                  height="24"
+              />
+            </template>
+            <v-list-item-title class="ml-2">
+              {{ firebaseUser?.email }}
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item
+              @click="signOutUser"
+          >
+            <template #prepend>
+              <v-icon>mdi-logout</v-icon>
+            </template>
+            <v-list-item-title class="ml-2">Sign out</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
 const searchTerm = useSearchTerm();
+const firebaseUser = useFirebaseUser();
 </script>
